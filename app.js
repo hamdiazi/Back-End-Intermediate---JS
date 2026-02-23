@@ -22,17 +22,39 @@ const Place =require('./models/place');
 app.set ('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+
+// middleware untuk proses save data ke express mongodb
+app.use(express.urlencoded({extended:true}));
+
 // membuat route untuk halaman home 
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// membuat route untuk halaman index places
+// membuat route untuk ke halaman index places
 app.get('/places', async (req, res) => {
-     const places = await Place.find();
-     res.render('places/index', {places});
+     const places = await Place.find();  //mencari data place dari mongodb dengan method find
+     res.render('places/index', {places}); //merender places ke lokasi places/index
 });
 
+// route untuk ke halaman create difolder place
+app.get('/places/create', (req, res) => {
+    res.render('places/create');
+})
+
+// route untuk post Add New place dari create
+app.post('/places', async (req, res) => {   //async await karna perlu koneksi ke db
+    const place = new Place (req.body.place);    // buat object didalam variabel place 
+    await place.save(); 
+    res.redirect('/places');
+})
+
+
+// route untuk detail places
+app.get('/places/:id', async (req, res) => {
+    const place = await Place.findById(req.params.id);
+    res.render('places/show', { place });
+})
 
 
 
