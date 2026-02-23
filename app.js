@@ -27,18 +27,27 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-// route untuk ke halaman seed 
-app.get('/seed/place', async (req, res)=>{
-        const place = new Place ({
-            title:'Empire State',
-            price:'$9999',
-            description:'A Greet Movie',
-            localtion:'New York, NY'
-        })
+// membuat route untuk halaman index places
+app.get('/places', async (req, res) => {
+     const places = await Place.find();
+     res.render('places/index', {places});
+});
 
-        await place.save();   //menyimpan kedalam database
-        res.send(place);      //tampilkan data yang ada didalam object place diatas 
-    })
+
+
+
+// route untuk ke halaman seed 
+// app.get('/seed/place', async (req, res)=>{
+//         const place = new Place ({
+//             title:'Empire State',
+//             price:'$9999',
+//             description:'A Greet Movie',
+//             localtion:'New York, NY'
+//         })
+
+//         await place.save();   //menyimpan kedalam database
+//         res.send(place);      //tampilkan data yang ada didalam object place diatas 
+//     })
 
 // inisialiasi untuk listen portnya
 app.listen(3000, () => {
