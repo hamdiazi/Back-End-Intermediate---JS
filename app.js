@@ -1,7 +1,10 @@
 // require untuk menggunakan express
 const express = require('express');
+const methodOverride = require('method-override'); // import method override
 const path = require ('path');
 const app = express();
+
+
 
 // import mongoose untuk connect ke mongodb
 const mongoose = require('mongoose');
@@ -25,6 +28,9 @@ app.set('views', path.join(__dirname, 'views'));
 
 // middleware untuk proses save data ke express mongodb
 app.use(express.urlencoded({extended:true}));
+// middleware untuk mengubah method post 
+app.use(methodOverride('_method'));
+
 
 // membuat route untuk halaman home 
 app.get('/', (req, res) => {
@@ -56,7 +62,17 @@ app.get('/places/:id', async (req, res) => {
     res.render('places/show', { place });
 })
 
+// route untuk edit places
+app.get('/places/:id/edit', async (req, res) => {
+    const place = await Place.findById(req.params.id);
+    res.render('places/edit', {place} );
+})
 
+// Resfull update & simpan
+app.put('/places/:id', async (req, res) => {
+    await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
+    res.redirect('/places');
+})
 
 // route untuk ke halaman seed 
 // app.get('/seed/place', async (req, res)=>{
