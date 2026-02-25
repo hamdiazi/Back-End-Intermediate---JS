@@ -1,3 +1,5 @@
+const ejsMate = require('ejs-mate') //import package ejs-mate
+
 // require untuk menggunakan express
 const express = require('express');
 const methodOverride = require('method-override'); // import method override
@@ -20,6 +22,9 @@ mongoose.connect('mongodb://127.0.0.1/bestpoints')
 
 // import models mongoose dari file place.js
 const Place =require('./models/place');
+
+// engine untuk EJS-Mate
+app.engine('ejs', ejsMate);
 
 // inisialiasi template engine EJS
 app.set ('view engine', 'ejs');

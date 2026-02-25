@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BestPoint <%= place.title %> </title>
-</head>
-<body>
+<% layout('layout/app') %>
     <h1> <%= place.title %> </h1>
     <h2> <%= place.location %> </h2>
     <form action="/places/<%= place._id %>?_method=DELETE" method="POST"  style="display: inline!important;">
@@ -13,6 +6,3 @@
     </form>
     <a href="/places/<%= place._id %>/edit"> Edit</a>
     <a href="/places"> All Places</a>
-
-</body>
-</html>
