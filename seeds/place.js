@@ -14,37 +14,43 @@ async function seedPlaces() {
             title: 'Taman Mini Indonesia Indah',
             price: 'Rp 20.000',
             description: 'Taman hiburan keluarga dengan berbagai replika bangunan dari seluruh Indonesia',
-            location: 'Taman Mini Indonesia Indah, Jakarta'
+            location: 'Taman Mini Indonesia Indah, Jakarta',
+            image:'https://video.cgtn.com/news/77416a4e7a67544e786b544f344d444e304d7a4e31457a6333566d54/video/ca413729bcf64502ab923c080b9d0920/ca413729bcf64502ab923c080b9d0920.jpg',
         },
         {
             title: 'Pantai Kuta',
             price: 'Gratis',
             description: 'Pantai yang terkenal di Bali dengan pemandangan sunset yang indah',
-            location: 'Pantai Kuta, Kuta, Badung Regency, Bali'
+            location: 'Pantai Kuta, Kuta, Badung Regency, Bali',
+            image:'http://source.unsplash.com/collection/2349781/1280x720',
         },
         {
             title: 'Borobudur',
             price: 'Rp 25.000',
             description: 'Candi Buddha terbesar di dunia yang terletak di Magelang, Jawa Tengah',
-            location: 'Borobudur, Magelang, Central Java'
+            location: 'Borobudur, Magelang, Central Java',
+            image:'http://source.unsplash.com/collection/2349781/1280x720',
         },
         {
             title: 'Kawah Putih',
             price: 'Rp 50.000',
             description: 'Kawah vulkanik dengan danau berwarna putih di Bandung, Jawa Barat',
-            location: 'Kawah Putih, Ciwidey, West Java'
+            location: 'Kawah Putih, Ciwidey, West Java',
+             image:'http://source.unsplash.com/collection/2349781/1280x720',
         },
         {
             title: 'Malioboro',
             price: 'Gratis',
             description: 'Jalan utama di Yogyakarta dengan berbagai toko dan kuliner khas',
-            location: 'Jl. Malioboro, Yogyakarta City, Special Region of Yogyakarta'
+            location: 'Jl. Malioboro, Yogyakarta City, Special Region of Yogyakarta',
+             image:'http://source.unsplash.com/collections/2349781/1280x720',
         },
         {
             title: 'Pantai Tanjung Aan',
             price: 'Rp 10.000',
             description: 'Pantai dengan pasir berwarna putih dan air laut yang jernih di Lombok, Nusa Tenggara Barat',
-            location: 'Pantai Tanjung Aan, Lombok, West Nusa Tenggara'
+            location: 'Pantai Tanjung Aan, Lombok, West Nusa Tenggara',
+             image:'http://source.unsplash.com/collections/2349781/travelling/1280x720',
         },
         {
             title: 'Bukit Bintang',
