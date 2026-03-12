@@ -1,7 +1,8 @@
 const ejsMate = require('ejs-mate') //import package ejs-mate
 
-// require untuk menggunakan express
-const express = require('express');
+const express = require('express');     // require untuk menggunakan express
+const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
+
 const methodOverride = require('method-override'); // import method override
 const wrapAsync = require('./utils/wrapAsync')  //requeire untuk handle error
 const path = require ('path');
@@ -23,6 +24,7 @@ mongoose.connect('mongodb://127.0.0.1/bestpoints')
 
 // import models mongoose dari file place.js
 const Place =require('./models/place');
+const ExpressError = require('./utils/ErrorHandler');
 
 // engine untuk EJS-Mate
 app.engine('ejs', ejsMate);
@@ -100,11 +102,18 @@ app.delete ('/places/:id', wrapAsync(async (req, res ) => {
 //         res.send(place);      //tampilkan data yang ada didalam object place diatas 
 //     })
 
+app.all('*', (req, res, next) => {
+    next(new ErrorHandler());
+})
+
 
 // middleware
 app.use((err, req, res, next) => {
-    console.log(err.stack);
-    res.status(500).send('Something broke!')
+    const {statusCode = 500} = err;
+    if (!err.message) err.message = 'Oh No, Something went wrong!'
+    res.status(statusCode).render('error', {err});
+    // console.log(err.stack);
+    // res.status(500).send('Something broke!')
 })
 
 // inisialiasi untuk listen portnya
