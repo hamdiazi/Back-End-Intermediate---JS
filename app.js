@@ -3,6 +3,7 @@ const ejsMate = require('ejs-mate') //import package ejs-mate
 // require untuk menggunakan express
 const express = require('express');
 const methodOverride = require('method-override'); // import method override
+const wrapAsync = require('./utils/wrapAsync')  //requeire untuk handle error
 const path = require ('path');
 const app = express();
 
@@ -43,10 +44,10 @@ app.get('/', (req, res) => {
 });
 
 // membuat route untuk ke halaman index places
-app.get('/places', async (req, res) => {
+app.get('/places', wrapAsync(async (req, res) => {
      const places = await Place.find();  //mencari data place dari mongodb dengan method find
      res.render('places/index', {places}); //merender places ke lokasi places/index
-});
+}));
 
 // route untuk ke halaman create difolder place
 app.get('/places/create', (req, res) => {
@@ -54,36 +55,36 @@ app.get('/places/create', (req, res) => {
 })
 
 // route untuk post Add New place dari create
-app.post('/places', async (req, res) => {   //async await karna perlu koneksi ke db
+app.post('/places', wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
     res.redirect('/places');
-})
+}))
 
 
 // route untuk detail places
-app.get('/places/:id', async (req, res) => {
+app.get('/places/:id', wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id);
     res.render('places/show', { place });
-})
+}))
 
 // route untuk edit places
-app.get('/places/:id/edit', async (req, res) => {
+app.get('/places/:id/edit', wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id);
     res.render('places/edit', {place} );
-})
+}))
 
 // Resfull update & simpan
-app.put('/places/:id', async (req, res) => {
+app.put('/places/:id', wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
     res.redirect('/places');
-})
+}))
 
 // Restfull untuk delete
-app.delete ('/places/:id', async (req, res ) => {
+app.delete ('/places/:id', wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
     res.redirect('/places');
-})
+}))
 
 
 // route untuk ke halaman seed 
@@ -98,6 +99,13 @@ app.delete ('/places/:id', async (req, res ) => {
 //         await place.save();   //menyimpan kedalam database
 //         res.send(place);      //tampilkan data yang ada didalam object place diatas 
 //     })
+
+
+// middleware
+app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send('Something broke!')
+})
 
 // inisialiasi untuk listen portnya
 app.listen(3000, () => {
