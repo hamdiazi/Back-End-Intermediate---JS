@@ -2,7 +2,7 @@ const ejsMate = require('ejs-mate') //import package ejs-mate
 
 const express = require('express');     // require untuk menggunakan express
 const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
-
+const Joi = require('joi'); //import library Joi
 const methodOverride = require('method-override'); // import method override
 const wrapAsync = require('./utils/wrapAsync')  //requeire untuk handle error
 const path = require ('path');
@@ -58,6 +58,21 @@ app.get('/places/create', (req, res) => {
 
 // route untuk post Add New place dari create
 app.post('/places', wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
+    // validasi server side dengan library JOI
+    const placeSchema = Joi.object ({
+        place:  Joi.object ({
+            title: Joi.string().required(),
+            location: Joi.string().required(),
+            price: Joi.number().min(0).required(),
+            description: Joi.string().required(),
+            image:Joi.string(). required(),
+        }).required()
+    })
+    const { error } = placeSchema.validate(req.body);
+    if (error) {
+        console.log(error)
+        return next(new ErrorHandler(error, 400))
+    }
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
     res.redirect('/places');
