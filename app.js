@@ -66,7 +66,7 @@ app.post('/places', wrapAsync(async (req, res, next )=> {   //async await karna 
             price: Joi.number().min(0).required(),
             description: Joi.string().required(),
             image:Joi.string(). required(),
-        }).required()
+        }).required(),
     })
     const { error } = placeSchema.validate(req.body);
     if (error) {
