@@ -2,7 +2,7 @@ const ejsMate = require('ejs-mate') //import package ejs-mate
 
 const express = require('express');     // require untuk menggunakan express
 const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
-const Joi = require('joi'); //import library Joi
+// const Joi = require('joi'); //import library Joi
 const methodOverride = require('method-override'); // import method override
 const wrapAsync = require('./utils/wrapAsync')  //requeire untuk handle error
 const path = require ('path');
@@ -23,8 +23,12 @@ mongoose.connect('mongodb://127.0.0.1/bestpoints')
 
 
 // import models mongoose dari file place.js
-const Place =require('./models/place');
-const ExpressError = require('./utils/ErrorHandler');
+const Place = require('./models/place');
+
+//schemas
+const { placeSchema } = require('./schemas/place');
+
+//const ExpressError = require('./utils/ErrorHandler');
 
 // engine untuk EJS-Mate
 app.engine('ejs', ejsMate);
@@ -38,6 +42,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended:true}));
 // middleware untuk mengubah method post 
 app.use(methodOverride('_method'));
+
+// middleware untuk validasi inputan , agar mudah dimasukkan ke parameter, sama kaya wrapAsync
+const validatePlace = (req, res, next) => {
+    const {error} = placeSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        return next(new ErrorHandler(msg, 400))
+    } else {
+        next();
+    }
+}
+
 
 
 // membuat route untuk halaman home 
@@ -57,22 +73,7 @@ app.get('/places/create', (req, res) => {
 })
 
 // route untuk post Add New place dari create
-app.post('/places', wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
-    // validasi server side dengan library JOI
-    const placeSchema = Joi.object ({
-        place:  Joi.object ({
-            title: Joi.string().required(),
-            location: Joi.string().required(),
-            price: Joi.number().min(0).required(),
-            description: Joi.string().required(),
-            image:Joi.string(). required(),
-        }).required(),
-    })
-    const { error } = placeSchema.validate(req.body);
-    if (error) {
-        console.log(error)
-        return next(new ErrorHandler(error, 400))
-    }
+app.post('/places', validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
     res.redirect('/places');
@@ -92,7 +93,7 @@ app.get('/places/:id/edit', wrapAsync(async (req, res) => {
 }))
 
 // Resfull update & simpan
-app.put('/places/:id', wrapAsync(async (req, res) => {
+app.put('/places/:id', validatePlace, wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
     res.redirect('/places');
 }))
