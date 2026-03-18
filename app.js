@@ -29,8 +29,11 @@ const Place = require('./models/place');
 const Review = require('./models/review')
 
 
-//schemas
+//schemas 
 const { placeSchema } = require('./schemas/place');
+
+// schemas untuk reviews
+const { reviewSchema } = require('./schemas/review')
 
 
 
@@ -60,6 +63,18 @@ const validatePlace = (req, res, next) => {
         next();
     }
 }
+
+// middleware untuk validasi review , agar mudah dimasukkan ke parameter, sama kaya wrapAsync
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        return next(new ErrorHandler(msg, 400))
+    } else {
+        next();
+    }
+}
+
 
 
 
@@ -112,7 +127,7 @@ app.delete ('/places/:id', wrapAsync(async (req, res ) => {
 }))
 
 // Restfull untuk review
-app.post('/places/:id/reviews', wrapAsync (async (req, res) => {
+app.post('/places/:id/reviews', validateReview, wrapAsync (async (req, res) => {
     const review = new Review(req.body.review);
     const place = await Place.findById(req.params.id);
     place.reviews.push(review);
