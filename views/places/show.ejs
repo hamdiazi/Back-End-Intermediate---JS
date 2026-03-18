@@ -34,7 +34,7 @@
   <!-- kolom review  -->
   <div class="col-6">
     <h3>Leave a review</h3>
-    <form action="/places/<%= place._id %>/reviews" method="POST" class="validate-form" novalidate>
+    <form action="/places/<%= place._id %>/reviews" method="POST" class="validate-form mb-3" novalidate>
       <!-- review range -->
       <label for="rating">Rating</label>
       <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
@@ -52,6 +52,14 @@
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
+    <% for(const review of place.reviews) { %>
+        <div class="card mb-3">
+                <div class="card-body">
+                        <h5 class="card-title">Rating: <%= review.rating %></h5>
+                        <p class="card-text"><%= review.body %></p>
+                </div>
+        </div>
+    <% } %>
   </div>
 
 
