@@ -25,8 +25,15 @@ mongoose.connect('mongodb://127.0.0.1/bestpoints')
 // import models mongoose dari file place.js
 const Place = require('./models/place');
 
+// import model review
+const Review = require('./models/review')
+
+
 //schemas
 const { placeSchema } = require('./schemas/place');
+
+
+
 
 //const ExpressError = require('./utils/ErrorHandler');
 
@@ -102,6 +109,16 @@ app.put('/places/:id', validatePlace, wrapAsync(async (req, res) => {
 app.delete ('/places/:id', wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
     res.redirect('/places');
+}))
+
+// Restfull untuk review
+app.post('/places/:id/reviews', wrapAsync (async (req, res) => {
+    const review = new Review(req.body.review);
+    const place = await Place.findById(req.params.id);
+    place.reviews.push(review);
+    await review.save();
+    await place.save(); 
+    res.redirect(`/places/${req.params.id}`);
 }))
 
 

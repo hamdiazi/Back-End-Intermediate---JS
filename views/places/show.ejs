@@ -35,7 +35,7 @@
                 <!-- kolom review  -->
                 <div class="col-6">
                         <h3>Leave a review</h3>
-                        <form action="">
+                        <form action="/places/<%= place._id %>/reviews" method="POST">
                                 <!-- review range -->
                                 <label for="rating">Rating</label>
                                 <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
@@ -43,7 +43,8 @@
                                 <!-- review komentar -->
                                 <div class="mb-3">
                                         <label for="review">Review</label>
-                                        <textarea name="review[body]" id="body" cols="30" rows="10" class="form-control"></textarea>
+                                        <textarea name="review[body]" id="body" cols="30" rows="10" 
+                                        class="form-control"></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-success">Submit</button>
                         </form>
