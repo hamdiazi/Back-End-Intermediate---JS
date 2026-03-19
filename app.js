@@ -126,7 +126,7 @@ app.delete ('/places/:id', wrapAsync(async (req, res ) => {
     res.redirect('/places');
 }))
 
-// Restfull untuk review
+// Restfull untuk simpan review
 app.post('/places/:id/reviews', validateReview, wrapAsync (async (req, res) => {
     const review = new Review(req.body.review);
     const place = await Place.findById(req.params.id);
@@ -136,6 +136,13 @@ app.post('/places/:id/reviews', validateReview, wrapAsync (async (req, res) => {
     res.redirect(`/places/${req.params.id}`);
 }))
 
+// restfull hapus review
+app.delete('/places/:place_id/reviews/:review_id', wrapAsync(async (req, res) => {
+    const { place_id, review_id} = req.params;
+    await Place.findByIdAndUpdate(place_id, {$pull: { reviews : review_id } } );
+    await Review.findByIdAndDelete(review_id);
+    res.redirect(`/places/${place_id}`);
+}) )
 
 // route untuk ke halaman seed 
 // app.get('/seed/place', async (req, res)=>{
