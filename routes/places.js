@@ -60,4 +60,6 @@ router.delete ('/:id', wrapAsync(async (req, res ) => {
     res.redirect('/places');
 }))
 
+
+
 module.exports = router;
