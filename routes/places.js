@@ -32,6 +32,7 @@ router.get('/create', (req, res) => {
 router.post('/', validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
+    req.flash('success_msg','Place Added Succesfully');
     res.redirect('/places');
 }))
 
@@ -51,12 +52,15 @@ router.get('/:id/edit', wrapAsync(async (req, res) => {
 // Resfull update & simpan
 router.put('/:id', validatePlace, wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
-    res.redirect('/places');
+    req.flash('success_msg','Place Updated Succesfully');
+    res.redirect(`/places/${req.params.id}`);
 }))
+
 
 // Restfull untuk delete
 router.delete ('/:id', wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
+    req.flash('success_msg','Place deleted Succesfully');
     res.redirect('/places');
 }))
 

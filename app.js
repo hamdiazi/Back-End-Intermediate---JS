@@ -1,6 +1,7 @@
 const ejsMate = require('ejs-mate') //import package ejs-mate
 const express = require('express');     // require untuk menggunakan express
 const session = require('express-session'); //import library express-session
+const flash = require('connect-flash'); //import library connect-flash
 const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const methodOverride = require('method-override'); // import method override
 const path = require ('path');
@@ -32,35 +33,33 @@ app.use(express.urlencoded({ extended:true }));
 // middleware untuk mengubah method post 
 app.use(methodOverride('_method'));
 
-
-
-
-app.use('/places', require ('./routes/places'));    // panggil file routes/places.js
-app.use('/places/:place_id/reviews', require('./routes/reviews'));  // panggil file routes/review.js  
-app.use(express.static(path.join(__dirname, 'public'))); //middleware untuk static folder public
 app.use(session({               //agar library session bisa digunakan
     secret:'this-is-a-secret-key',            //'secret' bisa diisi string bebas
     resave: false,  
     saveUninitialized:true, 
     cookie: {
         httpOnly:true,
-        secure:false,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
+app.use(flash());   //supaya library connect-flash bisa digunakan
+app.use((req, res, next) => {   //middleware flash-connect untuk session
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    next();
+})
 
 // app.get('/set', (req, res) => {
 //   req.session.test = "ok";
 //   res.send("Session dibuat.");
 // });
 
+app.use('/places', require ('./routes/places'));    // panggil file routes/places.js
+app.use('/places/:place_id/reviews', require('./routes/reviews'));  // panggil file routes/review.js  
+app.use(express.static(path.join(__dirname, 'public'))); //middleware untuk static folder public
 
 
-// membuat route untuk halaman home 
-app.get('/', (req, res) => {
-    res.render('home');
-});
 
 
 
@@ -77,7 +76,10 @@ app.get('/', (req, res) => {
 //         res.send(place);      //tampilkan data yang ada didalam object place diatas 
 //     })
 
-
+// membuat route untuk halaman home 
+app.get('/', (req, res) => {
+    res.render('home');
+});
 
 // bagian error Handler semua halaman
 app.all('*', (req, res, next) => {
