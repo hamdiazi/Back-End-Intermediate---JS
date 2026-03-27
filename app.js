@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended:true }));
 app.use(methodOverride('_method'));
 
 app.use(session({               //agar library session bisa digunakan
-    secret:'this-is-a-secret-key',            //'secret' bisa diisi string bebas
+    secret:'secretekey',            //'secret' bisa diisi string bebas
     resave: false,  
     saveUninitialized:true, 
     cookie: {
@@ -58,7 +58,6 @@ app.use((req, res, next) => {   //middleware flash-connect untuk session
 app.use('/places', require ('./routes/places'));    // panggil file routes/places.js
 app.use('/places/:place_id/reviews', require('./routes/reviews'));  // panggil file routes/review.js  
 app.use(express.static(path.join(__dirname, 'public'))); //middleware untuk static folder public
-
 
 
 

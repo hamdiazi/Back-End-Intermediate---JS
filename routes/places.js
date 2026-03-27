@@ -23,6 +23,7 @@ router.get('/', wrapAsync(async (req, res) => {
      res.render('places/index', {places}); //merender places ke lokasi places/index
 }));
 
+
 // route untuk ke halaman create difolder place
 router.get('/create', (req, res) => {
     res.render('places/create');
@@ -32,9 +33,9 @@ router.get('/create', (req, res) => {
 router.post('/', validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
-    req.flash('success_msg','Place Added Succesfully');
     res.redirect('/places');
 }))
+
 
 
 // route untuk detail places
