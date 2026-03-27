@@ -59,9 +59,6 @@ app.use('/places', require ('./routes/places'));    // panggil file routes/place
 app.use('/places/:place_id/reviews', require('./routes/reviews'));  // panggil file routes/review.js  
 app.use(express.static(path.join(__dirname, 'public'))); //middleware untuk static folder public
 
-
-
-
 // route untuk ke halaman seed 
 // app.get('/seed/place', async (req, res)=>{
 //         const place = new Place ({

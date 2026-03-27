@@ -33,9 +33,9 @@ router.get('/create', (req, res) => {
 router.post('/', validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
+    req.flash('success_msg','Place added succesfully');
     res.redirect('/places');
 }))
-
 
 
 // route untuk detail places
