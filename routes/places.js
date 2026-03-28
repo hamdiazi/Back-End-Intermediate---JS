@@ -46,13 +46,13 @@ router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
 }))
 
 // route untuk edit places
-router.get('/:id/edit', wrapAsync(async (req, res) => {
+router.get('/:id/edit', isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id);
     res.render('places/edit', {place} );
 }))
 
 // Resfull update & simpan
-router.put('/:id', validatePlace, wrapAsync(async (req, res) => {
+router.put('/:id', isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
     req.flash('success_msg','Place Updated Succesfully');
     res.redirect(`/places/${req.params.id}`);
@@ -60,7 +60,7 @@ router.put('/:id', validatePlace, wrapAsync(async (req, res) => {
 
 
 // Restfull untuk delete
-router.delete ('/:id', wrapAsync(async (req, res ) => {
+router.delete ('/:id', isValidObjectId('/places'), wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
     req.flash('success_msg','Place deleted Succesfully');
     res.redirect('/places');
