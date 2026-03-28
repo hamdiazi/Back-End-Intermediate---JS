@@ -2,7 +2,8 @@ const express = require('express');
 const Place = require('../models/place');   // import models mongoose dari file place.js
 const { placeSchema } = require('../schemas/place');  //schemas  untuk places
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
-const wrapAsync = require('../utils/wrapAsync')  //requeire untuk handle error
+const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
+const isValidObjectId = require('../middleware/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ router.post('/', validatePlace, wrapAsync(async (req, res, next )=> {   //async 
 
 
 // route untuk detail places
-router.get('/:id', wrapAsync(async (req, res) => {
+router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id).populate('reviews');
     res.render('places/show', { place });
 }))
