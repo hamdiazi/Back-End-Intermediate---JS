@@ -3,7 +3,7 @@ const Place = require('../models/place');   // import models mongoose dari file 
 const { placeSchema } = require('../schemas/place');  //schemas  untuk places
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
-const isValidObjectId = require('../middleware/isValidObjectId') //require middleware isValidObjectId (folder middleware)
+const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 
 const router = express.Router();
 

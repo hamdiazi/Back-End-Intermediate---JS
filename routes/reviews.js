@@ -4,7 +4,7 @@ const Review = require('../models/review');// import model review
 const { reviewSchema } = require('../schemas/review'); // schemas untuk reviews
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const wrapAsync = require('../utils/wrapAsync')  //requeire untuk handle error
-const isValidObjectId = require('../middleware/isValidObjectId') //require middleware isValidObjectId (folder middleware)
+const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 
 
 const router = express.Router({mergeParams:true});
