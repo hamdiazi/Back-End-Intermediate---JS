@@ -10,7 +10,7 @@ const router = express.Router();
 // middleware untuk validasi inputan , agar mudah dimasukkan ke parameter, sama kaya wrapAsync
 const validatePlace = (req, res, next) => {
     const {error} = placeSchema.validate(req.body);
-    if (error) {
+    if (error) {g
         const msg = error.details.map(el => el.message).join(',')
         return next(new ErrorHandler(msg, 400))
     } else {
