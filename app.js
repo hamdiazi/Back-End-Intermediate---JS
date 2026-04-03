@@ -4,6 +4,9 @@ const session = require('express-session'); //import library express-session
 const flash = require('connect-flash'); //import library connect-flash
 const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const methodOverride = require('method-override'); // import method override
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 const path = require ('path');
 const passport = require ('passport'); //import library passport (authentikasi) mongoose
 const LocalStrategy = require('passport-local'); //import library authentikasi lokal
@@ -47,8 +50,16 @@ app.use(session({               //agar library session bisa digunakan
     }
 }))
 app.use(flash());   //supaya library connect-flash bisa digunakan
+<<<<<<< HEAD
 app.use(passport.initialize());     //supaya library password bisa digunakan
 app.use(passport.session());
+=======
+app.use(passport.initialize()); //supaya library passport bisa digunakan
+app.use(passport.session()); //session untuk passport 
+passport.use(new LocalStrategy(User.authenticate())); //localstrategy milik passport yg diatas
+passport.serializeUser(User.serializeUser());  
+passport.deserializeUser(User.deserializeUser());
+>>>>>>> 3ae61a5c7641030f6a49947dd58938cb3a481e5b
 
 app.use((req, res, next) => {   //middleware flash-connect untuk session
     res.locals.success_msg = req.flash('success_msg');
@@ -82,6 +93,23 @@ app.use(express.static(path.join(__dirname, 'public'))); //middleware untuk stat
 app.get('/', (req, res) => {
     res.render('home');
 });
+
+// route untuk registrasi
+app.get('/register', async (req, res) => {
+    const user = new User({
+        email:'user@mail.com',
+        username:'user'
+    });
+
+    // cara promise
+    // user.register(user, 'password', (err, user) => {
+    //     res.send(user);
+    // })
+    
+    // cara async await
+    const newUser = await User.register(user, 'password')
+    res.send(newUser);
+})
 
 // bagian error Handler semua halaman
 app.all('*', (req, res, next) => {
