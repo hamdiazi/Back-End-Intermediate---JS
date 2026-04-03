@@ -5,6 +5,9 @@ const flash = require('connect-flash'); //import library connect-flash
 const ErrorHandler = require('./utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const methodOverride = require('method-override'); // import method override
 const path = require ('path');
+const passport = require ('passport'); //import library passport (authentikasi) mongoose
+const LocalStrategy = require('passport-local'); //import library authentikasi lokal
+const User = require('./models/user'); //import model user
 const app = express();
 
 // import mongoose untuk connect ke mongodb
@@ -44,6 +47,9 @@ app.use(session({               //agar library session bisa digunakan
     }
 }))
 app.use(flash());   //supaya library connect-flash bisa digunakan
+app.use(passport.initialize());     //supaya library password bisa digunakan
+app.use(passport.session());
+
 app.use((req, res, next) => {   //middleware flash-connect untuk session
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
