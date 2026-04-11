@@ -46,10 +46,12 @@ app.use(session({               //agar library session bisa digunakan
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
+
+app.use(passport.session()); 
 app.use(flash());   //supaya library connect-flash bisa digunakan
 app.use(passport.initialize());     //supaya library password bisa digunakan
-app.use(passport.session()); 
-passport.use(new LocalStrategy(User.authenticate));
+//passport.use(new LocalStrategy(User.authenticate));
+passport.use(new LocalStrategy(User.authenticate())); //perbaikan dibantu ai
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
