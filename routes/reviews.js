@@ -5,7 +5,7 @@ const { reviewSchema } = require('../schemas/review'); // schemas untuk reviews
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const wrapAsync = require('../utils/wrapAsync')  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
-
+const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
 
 const router = express.Router({mergeParams:true});
 
@@ -21,7 +21,7 @@ const validateReview = (req, res, next) => {
 }
 
 // Restfull untuk simpan review
-router.post('/', isValidObjectId('/places'), validateReview, wrapAsync (async (req, res) => {
+router.post('/', isAuth, isValidObjectId('/places'), validateReview, wrapAsync (async (req, res) => {
     const review = new Review(req.body.review);
     const place = await Place.findById(req.params.place_id);
     place.reviews.push(review);
@@ -32,7 +32,7 @@ router.post('/', isValidObjectId('/places'), validateReview, wrapAsync (async (r
 }))
 
 // restfull hapus review
-router.delete('/:review_id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
+router.delete('/:review_id', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const { place_id, review_id} = req.params;
     await Place.findByIdAndUpdate(place_id, {$pull: { reviews : review_id } } );
     await Review.findByIdAndDelete(review_id);

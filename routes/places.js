@@ -4,6 +4,7 @@ const { placeSchema } = require('../schemas/place');  //schemas  untuk places
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
+const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
 
 const router = express.Router();
 
@@ -26,12 +27,12 @@ router.get('/', wrapAsync(async (req, res) => {
 
 
 // route untuk ke halaman create difolder place
-router.get('/create', (req, res) => {
+router.get('/create', isAuth, (req, res) => {
     res.render('places/create');
 })
 
 // route untuk post Add New place dari create
-router.post('/', validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
+router.post('/', isAuth, validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
     await place.save(); 
     req.flash('success_msg','Place added succesfully');
@@ -46,13 +47,13 @@ router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
 }))
 
 // route untuk edit places
-router.get('/:id/edit', isValidObjectId('/places'), wrapAsync(async (req, res) => {
+router.get('/:id/edit', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id);
     res.render('places/edit', {place} );
 }))
 
 // Resfull update & simpan
-router.put('/:id', isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
+router.put('/:id', isAuth, isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
     req.flash('success_msg','Place Updated Succesfully');
     res.redirect(`/places/${req.params.id}`);
@@ -60,7 +61,7 @@ router.put('/:id', isValidObjectId('/places'), validatePlace, wrapAsync(async (r
 
 
 // Restfull untuk delete
-router.delete ('/:id', isValidObjectId('/places'), wrapAsync(async (req, res ) => {
+router.delete ('/:id', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
     req.flash('success_msg','Place deleted Succesfully');
     res.redirect('/places');
