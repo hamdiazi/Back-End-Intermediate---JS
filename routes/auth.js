@@ -28,7 +28,7 @@ router.post('/register', wrapAsync(async (req,res) => {
 router.get('/login', (req, res) => {
     res.render('auth/login');
 })
-
+// fungsi untuk login 
 router.post('/login', passport.authenticate('local',{
     failureRedirect:'/login',
     failureFlash: {
@@ -36,6 +36,7 @@ router.post('/login', passport.authenticate('local',{
         msg:'Invalid username or password'
     }
 }), (req, res) => {
+    console.log(req.user);
     req.flash('success_msg','You are logged in');
     res.redirect('/places');
 })
@@ -44,7 +45,7 @@ router.post('/logout', (req, res) => {
     req.logout(function(err) {
         if(err) {return next(err)}
         req.flash('success_msg', 'You are Logged out');
-        res.redirect('/places');
+        res.redirect('/login');
     })
 })
 
