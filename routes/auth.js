@@ -39,8 +39,13 @@ router.post('/login', passport.authenticate('local',{
     req.flash('success_msg','You are logged in');
     res.redirect('/places');
 })
-
-
-
+// fungsi untuk log out 
+router.post('/logout', (req, res) => {
+    req.logout(function(err) {
+        if(err) {return next(err)}
+        req.flash('success_msg', 'You are Logged out');
+        res.redirect('/places');
+    })
+})
 
 module.exports = router
