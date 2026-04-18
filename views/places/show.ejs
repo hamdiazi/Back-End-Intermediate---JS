@@ -23,6 +23,7 @@
         <li class="list-group-item"> Author: 
           <%= place.author.username %>
         </li>
+        <% if(currentUser && place.author.equals(currentUser._id)){ %>
       </ul>
       <div class="card-body">
         <a href="/places/<%= place._id %>/edit" class="card-link 
@@ -31,6 +32,7 @@
           <button class="btn btn-danger">Delete</button>
         </form>
       </div>
+      <% } %>
     </div>
   </div>
 
