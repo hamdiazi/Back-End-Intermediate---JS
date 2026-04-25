@@ -5,6 +5,7 @@ const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handlin
 const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
+const { isAuthorPlace } = require ('../middlewares/isAuthor'); //middleware isAuthorized 
 
 const router = express.Router();
 
@@ -48,13 +49,19 @@ router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
 }))
 
 // route untuk edit places
-router.get('/:id/edit', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res) => {
+router.get('/:id/edit', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const place = await Place.findById(req.params.id);
     res.render('places/edit', {place} );
 }))
 
 // Resfull update & simpan
-router.put('/:id', isAuth, isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
+router.put('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
+    // const {id} = req.params;
+    // let place = await Place.findById(id);
+    // if(!place.author.equals(req.user._id)) {
+    //     req.flash('error_msg','Not authorized');
+    //     return res.redirect ('/places');
+    // }
     await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
     req.flash('success_msg','Place Updated Succesfully');
     res.redirect(`/places/${req.params.id}`);
@@ -62,7 +69,7 @@ router.put('/:id', isAuth, isValidObjectId('/places'), validatePlace, wrapAsync(
 
 
 // Restfull untuk delete
-router.delete ('/:id', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res ) => {
+router.delete ('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(async (req, res ) => {
     await Place.findByIdAndDelete(req.params.id);
     req.flash('success_msg','Place deleted Succesfully');
     res.redirect('/places');
