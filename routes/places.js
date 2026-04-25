@@ -43,8 +43,15 @@ router.post('/', isAuth, validatePlace, wrapAsync(async (req, res, next )=> {   
 
 // route untuk detail places
 router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id).populate('reviews').populate('author');
-    //console.log(place);
+    const place = await Place.findById(req.params.id)
+    .populate({
+        path:'reviews',
+        populate : {
+            path:'author'
+        }
+    })
+    .populate('author');
+    // console.log(place);
     res.render('places/show', { place });
 }))
 

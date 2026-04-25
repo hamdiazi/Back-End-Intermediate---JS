@@ -6,6 +6,7 @@ const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handlin
 const wrapAsync = require('../utils/wrapAsync')  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
+const { isAuthorReview } = require('../middlewares/isAuthor'); //middleware untuk authenticated review
 
 const router = express.Router({mergeParams:true});
 
@@ -37,7 +38,7 @@ router.post('/', isAuth, isValidObjectId('/places'), validateReview, wrapAsync (
 }))
 
 // restfull hapus review
-router.delete('/:review_id', isAuth, isValidObjectId('/places'), wrapAsync(async (req, res) => {
+router.delete('/:review_id', isAuth,isAuthorReview, isValidObjectId('/places'), wrapAsync(async (req, res) => {
     const { place_id, review_id} = req.params;
     await Place.findByIdAndUpdate(place_id, {$pull: { reviews : review_id } } );
     await Review.findByIdAndDelete(review_id);
