@@ -38,6 +38,7 @@
 
   <!-- kolom review  -->
   <div class="col-6">
+    <% if (currentUser) { %>
     <h3>Leave a review</h3>
     <form action="/places/<%= place._id %>/reviews" method="POST" class="validate-form mb-3" novalidate>
       <!-- review range -->
@@ -57,6 +58,8 @@
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
+    <% } %>
+
     <% for(const review of place.reviews) { %>
         <div class="card mb-3">
                 <div class="card-body">
