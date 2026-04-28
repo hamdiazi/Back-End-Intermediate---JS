@@ -12,7 +12,7 @@ const router = express.Router();
 // middleware untuk validasi inputan , agar mudah dimasukkan ke parameter, sama kaya wrapAsync
 const validatePlace = (req, res, next) => {
     const {error} = placeSchema.validate(req.body);
-    if (error) {g
+    if (error) {
         const msg = error.details.map(el => el.message).join(',')
         return next(new ErrorHandler(msg, 400))
     } else {
@@ -35,6 +35,7 @@ router.get('/create', isAuth, (req, res) => {
 // route untuk post Add New place dari create
 router.post('/', isAuth, validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
     const place = new Place (req.body.place);    // buat object didalam variabel place 
+    place.author = req.user._id; //tambahan agar bisa muncul author nya saat di create baru
     await place.save(); 
     req.flash('success_msg','Place added succesfully');
     res.redirect('/places');
@@ -51,7 +52,7 @@ router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
         }
     })
     .populate('author');
-    // console.log(place);
+    console.log(place);
     res.render('places/show', { place });
 }))
 

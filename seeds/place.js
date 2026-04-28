@@ -28,7 +28,7 @@ async function seedPlaces() {
 
     try {
         const newPlace = places.map( place => {
-            return {...place, author:'69da8ebb2f80c080be5d20a8'}
+            return {...place, author:'69f107ae863e2787c4164277'}
         })
         await Place.deleteMany({});
         await Place.insertMany(newPlace);
