@@ -1,11 +1,13 @@
 const express = require('express');
-const Place = require('../models/place');   // import models mongoose dari file place.js
+// const Place = require('../models/place');   // import models mongoose dari file place.js
+const PlaceControllers = require('../controllers/places'); //panggil di folder controllers > places.js
 const { placeSchema } = require('../schemas/place');  //schemas  untuk places
 const ErrorHandler = require('../utils/ErrorHandler');   //require untuk handling error dari class ExpressError
 const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
 const { isAuthorPlace } = require ('../middlewares/isAuthor'); //middleware isAuthorized 
+
 
 const router = express.Router();
 
@@ -21,10 +23,7 @@ const validatePlace = (req, res, next) => {
 }
 
 // membuat route untuk ke halaman index places
-router.get('/', wrapAsync(async (req, res) => {
-     const places = await Place.find();  //mencari data place dari mongodb dengan method find
-     res.render('places/index', {places}); //merender places ke lokasi places/index
-}));
+router.get('/', wrapAsync(PlaceControllers.index));
 
 
 // route untuk ke halaman create difolder place
@@ -33,55 +32,21 @@ router.get('/create', isAuth, (req, res) => {
 })
 
 // route untuk post Add New place dari create
-router.post('/', isAuth, validatePlace, wrapAsync(async (req, res, next )=> {   //async await karna perlu koneksi ke db
-    const place = new Place (req.body.place);    // buat object didalam variabel place 
-    place.author = req.user._id; //tambahan agar bisa muncul author nya saat di create baru
-    await place.save(); 
-    req.flash('success_msg','Place added succesfully');
-    res.redirect('/places');
-}))
+router.post('/', isAuth, validatePlace, wrapAsync(PlaceControllers.store))
 
 
 // route untuk detail places
-router.get('/:id', isValidObjectId('/places'), wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id)
-    .populate({
-        path:'reviews',
-        populate : {
-            path:'author'
-        }
-    })
-    .populate('author');
-    console.log(place);
-    res.render('places/show', { place });
-}))
+router.get('/:id', isValidObjectId('/places'), wrapAsync(PlaceControllers.show))
 
 // route untuk edit places
-router.get('/:id/edit', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id);
-    res.render('places/edit', {place} );
-}))
+router.get('/:id/edit', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(PlaceControllers.edit))
 
 // Resfull update & simpan
-router.put('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(async (req, res) => {
-    // const {id} = req.params;
-    // let place = await Place.findById(id);
-    // if(!place.author.equals(req.user._id)) {
-    //     req.flash('error_msg','Not authorized');
-    //     return res.redirect ('/places');
-    // }
-    await Place.findByIdAndUpdate(req.params.id, {...req.body.place});
-    req.flash('success_msg','Place Updated Succesfully');
-    res.redirect(`/places/${req.params.id}`);
-}))
+router.put('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(PlaceControllers.update))
 
 
 // Restfull untuk delete
-router.delete ('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(async (req, res ) => {
-    await Place.findByIdAndDelete(req.params.id);
-    req.flash('success_msg','Place deleted Succesfully');
-    res.redirect('/places');
-}))
+router.delete ('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(PlaceControllers.destroy))
 
 
 
