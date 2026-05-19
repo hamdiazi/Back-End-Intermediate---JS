@@ -5,17 +5,16 @@ const PlaceControllers = require('../controllers/places'); //panggil di folder c
 const wrapAsync = require('../utils/wrapAsync');  //requeire untuk handle error
 const isValidObjectId = require('../middlewares/isValidObjectId') //require middleware isValidObjectId (folder middleware)
 const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
-const { isAuthorPlace } = require('../middlewares/isAuthor'); //middleware isAuthorized 
-const { validatePlace } = require('../middlewares/validator') //import middleware validator
-
+const { isAuthorPlace } = require ('../middlewares/isAuthor'); //middleware isAuthorized 
+const { validatePlace } = require('../middlewares/validator') //middleware ke validator places
 
 const router = express.Router();
 
-// middleware untuk validasi inputan , agar mudah dimasukkan ke parameter, sama kaya wrapAsync
 
-
-// membuat route untuk ke halaman index places
-router.get('/', wrapAsync(PlaceControllers.index));
+router.route('/')
+.get(wrapAsync(PlaceControllers.index)) // membuat route untuk ke halaman index places
+.post(isAuth, validatePlace, wrapAsync(PlaceControllers.store)) // route untuk post Add New place dari create
+ 
 
 
 // route untuk ke halaman create difolder place
@@ -23,23 +22,18 @@ router.get('/create', isAuth, (req, res) => {
     res.render('places/create');
 })
 
-// route untuk post Add New place dari create
-router.post('/', isAuth, validatePlace, wrapAsync(PlaceControllers.store))
+router.route('/:id')
+    // route untuk detail places
+    .get(isValidObjectId('/places'), wrapAsync(PlaceControllers.show))
+    // Resfull update & simpan
+    .put(isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(PlaceControllers.update))
+    // Restfull untuk delete
+   .delete (isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(PlaceControllers.destroy))
 
 
-// route untuk detail places
-router.get('/:id', isValidObjectId('/places'), wrapAsync(PlaceControllers.show))
 
 // route untuk edit places
 router.get('/:id/edit', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(PlaceControllers.edit))
-
-// Resfull update & simpan
-router.put('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(PlaceControllers.update))
-
-
-// Restfull untuk delete
-router.delete ('/:id', isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(PlaceControllers.destroy))
-
 
 
 module.exports = router;

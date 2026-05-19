@@ -5,17 +5,18 @@ const AuthController = require('../controllers/auth'); //memanggil controller > 
 const wrapAsync = require('../utils/wrapAsync');
 const passport = require('passport');
 
+router.route('/register')
 // route untuk ke form register 
-router.get('/register', AuthController.registerform)
-
+.get(AuthController.registerform)
 // router post agar bisa create user di form register
-router.post('/register', wrapAsync(AuthController.registerUser))
+.post(wrapAsync(AuthController.registerUser))
+
 
 // route untuk ke form login 
-router.get('/login', AuthController.loginForm)
-
+router.route('/login')
+.get( AuthController.loginForm)
 // fungsi untuk login 
-router.post('/login', passport.authenticate('local',{
+.post(passport.authenticate('local',{
     failureRedirect:'/login',
     failureFlash: {
         type: 'error_msg',
