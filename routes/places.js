@@ -7,14 +7,19 @@ const isValidObjectId = require('../middlewares/isValidObjectId') //require midd
 const isAuth = require('../middlewares/isAuth'); //middleware untuk validasi authenticated user login
 const { isAuthorPlace } = require ('../middlewares/isAuthor'); //middleware isAuthorized 
 const { validatePlace } = require('../middlewares/validator') //middleware ke validator places
+const upload = require('../configs/multer')//import multer untuk upload image
 
 const router = express.Router();
 
 
 router.route('/')
 .get(wrapAsync(PlaceControllers.index)) // membuat route untuk ke halaman index places
-.post(isAuth, validatePlace, wrapAsync(PlaceControllers.store)) // route untuk post Add New place dari create
- 
+//.post(isAuth, validatePlace, wrapAsync(PlaceControllers.store)) // route untuk post Add New place dari create
+ .post(isAuth, upload.array('image', 5), (req, res) => {
+    console.log(req.files)
+    console.log(req.body)
+    res.send('it works')
+ })
 
 
 // route untuk ke halaman create difolder place
