@@ -6,9 +6,16 @@ module.exports.index = async (req, res) => {
 }
 
 module.exports.store = async (req, res, next) => {   //async await karna perlu koneksi ke db
+    const images = req.files.map(file => ({   //dapatkan file images dan lakukan mapping
+        url: file.path,
+        filename:file.filename
+    })); 
     const place = new Place(req.body.place);    // buat object didalam variabel place 
     place.author = req.user._id; //tambahan agar bisa muncul author nya saat di create baru
+    place.images = images; // tambahkan data untuk images dengan isian image diatas.
+     
     await place.save();
+
     req.flash('success_msg', 'Place added succesfully');
     res.redirect('/places');
 }

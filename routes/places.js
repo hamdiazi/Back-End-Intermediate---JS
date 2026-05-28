@@ -14,12 +14,12 @@ const router = express.Router();
 
 router.route('/')
 .get(wrapAsync(PlaceControllers.index)) // membuat route untuk ke halaman index places
-//.post(isAuth, validatePlace, wrapAsync(PlaceControllers.store)) // route untuk post Add New place dari create
- .post(isAuth, upload.array('image', 5), (req, res) => {
-    console.log(req.files)
-    console.log(req.body)
-    res.send('it works')
- })
+.post(isAuth, upload.array('image', 5), validatePlace, wrapAsync(PlaceControllers.store)) // route untuk post Add New place dari create
+//  .post(isAuth, upload.array('image', 5), (req, res) => {
+//     console.log(req.files)
+//     console.log(req.body)
+//     res.send('it works')
+//  })
 
 
 // route untuk ke halaman create difolder place

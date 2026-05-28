@@ -23,10 +23,10 @@ const  ErrorHandler = require('../utils/ErrorHandler');
             if (file.mimetype.startsWith('image/')) {
                 cb(null, true);
             }else {
-                cb(new ErrorHandler('Only Images are allowerd'));
+                cb(new ErrorHandler('Only Images are allowed'));
             }
         }
     });
 
-    module.exports = upload
+    module.exports = upload;
 
