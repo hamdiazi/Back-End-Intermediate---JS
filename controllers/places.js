@@ -1,4 +1,6 @@
 const Place = require('../models/place');
+const fs = require('fs');  //import library filesystem dari node
+const ExpressError = require('../utils/ErrorHandler');  //import middleware ExpressError
 
 module.exports.index = async (req, res) => {
     const places = await Place.find();  //mencari data place dari mongodb dengan method find
@@ -45,7 +47,21 @@ module.exports.update = async (req, res) => {   //untuk edit dan update place ya
     //     req.flash('error_msg','Not authorized');
     //     return res.redirect ('/places');
     // }
-    await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
+    const place = await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
+    if (req.files && req.files.length > 0) {
+        
+        place.images.forEach( image => {        //hapus data image
+            fs.unlink(image.url, err => new ExpressError(err)); //dari image url
+        })
+    
+        const images = req.files.map(file => ({
+            url: file.path,
+            filename: file.filename
+        }));
+        place.images = images;          //update data images
+        await place.save();
+    }
+
     req.flash('success_msg', 'Place Updated Succesfully');
     res.redirect(`/places/${req.params.id}`);
 }
