@@ -31,7 +31,7 @@ router.route('/:id')
     // route untuk detail places
     .get(isValidObjectId('/places'), wrapAsync(PlaceControllers.show))
     // Resfull update & simpan
-    .put(isAuth, isAuthorPlace, isValidObjectId('/places'), validatePlace, wrapAsync(PlaceControllers.update))
+    .put(isAuth, isAuthorPlace, isValidObjectId('/places'), upload.array('image', 5),  validatePlace, wrapAsync(PlaceControllers.update))
     // Restfull untuk delete
    .delete (isAuth, isAuthorPlace, isValidObjectId('/places'), wrapAsync(PlaceControllers.destroy))
 

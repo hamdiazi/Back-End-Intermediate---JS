@@ -23,7 +23,7 @@ const  ErrorHandler = require('../utils/ErrorHandler');
             if (file.mimetype.startsWith('image/')) {
                 cb(null, true);
             }else {
-                cb(new ErrorHandler('Only Images are allowed'));
+                cb(new ExpressError('Only Images are allowed'));
             }
         }
     });
