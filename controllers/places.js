@@ -45,7 +45,7 @@ module.exports.update = async (req, res) => {   //untuk edit dan update place ya
     //     req.flash('error_msg','Not authorized');
     //     return res.redirect ('/places');
     // }
-    await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
+    const place = await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
     req.flash('success_msg', 'Place Updated Succesfully');
     res.redirect(`/places/${req.params.id}`);
 }
