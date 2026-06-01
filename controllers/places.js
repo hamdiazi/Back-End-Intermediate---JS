@@ -68,7 +68,18 @@ module.exports.update = async (req, res) => {   //untuk edit dan update place ya
 
 
 module.exports.destroy = async (req, res) => {
-    await Place.findByIdAndDelete(req.params.id);
+    // await Place.findByIdAndDelete(req.params.id);     //yg lama
+    const {id} = req.params;
+    const place = await Place.findById(id);
+
+     if (place.images.length > 0) {
+        place.images.forEach( image => {        //hapus data image
+            fs.unlink(image.url, err => new ExpressError(err)); //dari image url
+        })
+    
+    }
+    await place.deleteOne();
+
     req.flash('success_msg', 'Place deleted Succesfully');
     res.redirect('/places');
 }
