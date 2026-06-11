@@ -1,7 +1,6 @@
 <% layout('layout/app') %>
     <h1 class="text-center"> Edit Place</h1>
    
-    <div class="row-mb5">
       <div class="col-6">
           <form action="/places/<%= place._id %>?_method=PUT" method="POST" class="validate-form" novalidate enctype="multipart/form-data">
               <div class="mb-3">
@@ -73,6 +72,24 @@
            <label for="checkAll" class="form-check-label"> Check All</label>
       </div>
 
-    </div>
+      <form action="/">
+        <% place.images.forEach((image, index) => { %>
+          
+            <div class="col-md-4">
+              <div class="card mb-3">
+                <img src="/images/<%= image.filename %>" class="card-img-top">
+                <div class="card-body">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="images[]" value="<%= image.url %>">
+                    <span class="custom-checkbox-text">Pilih</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          <% } ) %>
+            <div class="w-100"></div>
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
 
     </div>
+
