@@ -3,7 +3,7 @@
 
   <div class="row mb-5">
 
-    <div class="col-6">
+    <div class="col-6 <%= !place.images.length > 0 ? 'offset-3' : '' %>">
       <form action="/places/<%= place._id %>?_method=PUT" method="POST" class="validate-form" novalidate
         enctype="multipart/form-data">
         <div class="mb-3">
@@ -68,6 +68,8 @@
       </form>
     </div>
 
+    <% if(place.images.length > 0) { %> <!-- Pengkondisian delete images -->
+
     <div class="col-6">
       <h5 class="text-center">Delete Images</h5>
       <div class="form-group form-check">
@@ -96,5 +98,15 @@
 
     </div>
 
+    <% } %>
 
   </div>
+
+  <script>
+      document.getElementById('checkAll').addEventListener('change', function() {
+        const checkboxes = document.getElementsByName('images[]');
+        for (let i=0; i < checkboxes.length;  i++) {
+          checkboxes[i].checked = this.checked;
+        }
+      });
+  </script>
