@@ -77,7 +77,7 @@
         <label for="checkAll" class="form-check-label"> Check All</label>
       </div>
 
-      <form action="/" class="d-flex flex-wrap">
+      <form action="/places/<%= place._id %>/images?_method=DELETE" method="POST" class="d-flex flex-wrap">
         <% place.images.forEach((image, index)=> { %>
 
           <div class="col-md-4">

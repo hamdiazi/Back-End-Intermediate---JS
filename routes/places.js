@@ -40,5 +40,7 @@ router.route('/:id')
 // route untuk edit places
 router.get('/:id/edit', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(PlaceControllers.edit))
 
+//route untuk delete images satu-persatu
+router.delete('/:id/images', isAuth, isAuthorPlace,  isValidObjectId('/places'), wrapAsync(PlaceControllers.destroyImage) )
 
 module.exports = router;
